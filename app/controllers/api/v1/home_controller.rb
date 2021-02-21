@@ -3,7 +3,7 @@ module Api
     class HomeController < ApplicationController
       def index
         customers = Customer.all
-        render json: { status: "SUCCESS", message: "Loaded customers", data: customers }
+        render json: { status: 200, message: "Loaded customers", data: customers }
       end
     end
   end
