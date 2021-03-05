@@ -1,13 +1,17 @@
 module Api
   module V1
     class CustomersController < ApplicationController
+      before_action :authenticate_api_v1_user!
+
       def index
         customers = Customer.all
         render json: { status: 200, message: "Loaded customers", data: customers }
       end
 
       def create
-        customer = Customer.new(customer_params)
+        params = customer_params
+        params[:user_id] = current_api_v1_user.id
+        customer = Customer.new(params)
         if customer.save
           render json: { status: 200, data: customer }
         else
