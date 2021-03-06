@@ -4,7 +4,11 @@ module Api
       before_action :authenticate_api_v1_user!
 
       def index
+        # 全部表示
         customers = Customer.all
+        # ユーザー毎に表示
+        # customers = Customer.where(user_id: current_api_v1_user.id)
+
         render json: { status: 200, message: "Loaded customers", data: customers }
       end
 
