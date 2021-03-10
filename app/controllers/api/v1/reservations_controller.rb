@@ -24,6 +24,16 @@ class Api::V1::ReservationsController < ApplicationController
     end
   end
 
+  def update
+    if reservation = Reservation.find_by(id: params[:id])
+      if reservation.update(reservation_params)
+        render json: { status: 200, message: "update the reservation", data: reservation }
+      end
+    else
+      render json: { status: 400, data: reservation.errors }
+    end
+  end
+
   def reservation_params
     params.require(:reservation).permit(:id, :name, :all_day, :start_datetime, :end_datetime, :user_id, :created_at, :updated_at)
   end
