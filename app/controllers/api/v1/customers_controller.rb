@@ -7,7 +7,7 @@ module Api
         # 全部表示
         customers = Customer.all
         # ユーザー毎に表示
-        # customers = Customer.where(user_id: current_api_v1_user.id)
+        # customers = Customer.where(user_id: current_api_v1_staff.id)
 
         render json: { status: 200, message: "Loaded customers", data: customers }
       end
