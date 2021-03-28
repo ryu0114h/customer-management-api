@@ -53,7 +53,7 @@ class Api::V1::Staff::RegistrationsController < DeviseTokenAuth::RegistrationsCo
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :postal_code, :address, :introduction_text])
   end
 
   # The path used after sign up.
