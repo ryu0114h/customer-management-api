@@ -5,7 +5,6 @@ Rails.application.routes.draw do
       resources :customers
       resources :staff
 
-      mount_devise_token_auth_for "User", at: "user_auth"
       mount_devise_token_auth_for "Staff",
                                   at: "staff_auth",
                                   controllers: {

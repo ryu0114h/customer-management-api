@@ -1,20 +1,20 @@
 module Api
   module V1
     class CustomersController < ApplicationController
-      # before_action :authenticate_api_v1_user!
+      # before_action :authenticate_api_v1_staff!
 
       def index
         # 全部表示
         customers = Customer.all
         # ユーザー毎に表示
-        # customers = Customer.where(user_id: current_api_v1_staff.id)
+        # customers = Customer.where(staff_id: current_api_v1_staff.id)
 
         render json: { status: 200, message: "Loaded customers", data: customers }
       end
 
       def create
         params = customer_params
-        params[:user_id] = current_api_v1_user.id
+        params[:staff_id] = current_api_v1_staff.id
         customer = Customer.new(params)
         if customer.save
           render json: { status: 200, data: customer }
@@ -42,7 +42,7 @@ module Api
       end
 
       def customer_params
-        params.require(:customer).permit(:id, :firstName, :lastName, :age, :address, :memo, :user_id, :created_at, :updated_at)
+        params.require(:customer).permit(:id, :firstName, :lastName, :age, :address, :memo, :staff_id, :created_at, :updated_at)
       end
     end
   end

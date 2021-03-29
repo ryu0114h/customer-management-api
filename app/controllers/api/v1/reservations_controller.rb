@@ -6,7 +6,7 @@ class Api::V1::ReservationsController < ApplicationController
 
   def create
     params = reservation_params
-    params[:user_id] = current_api_v1_user.id
+    params[:staff_id] = current_api_v1_staff.id
     reservation = Reservation.new(params)
     if reservation.save
       render json: { status: 200, data: reservation }
@@ -35,6 +35,6 @@ class Api::V1::ReservationsController < ApplicationController
   end
 
   def reservation_params
-    params.require(:reservation).permit(:id, :name, :all_day, :start_datetime, :end_datetime, :user_id, :created_at, :updated_at, :customer_id)
+    params.require(:reservation).permit(:id, :name, :all_day, :start_datetime, :end_datetime, :staff_id, :created_at, :updated_at, :customer_id)
   end
 end
