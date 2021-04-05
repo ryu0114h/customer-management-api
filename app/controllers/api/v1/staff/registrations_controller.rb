@@ -4,6 +4,8 @@ class Api::V1::Staff::RegistrationsController < DeviseTokenAuth::RegistrationsCo
   # before_action :configure_sign_up_params, only: [:create]
   before_action :configure_account_update_params, only: [:update]
 
+  include Rails.application.routes.url_helpers
+
   # protected
 
   # def update_resource(resource, params)
@@ -53,7 +55,23 @@ class Api::V1::Staff::RegistrationsController < DeviseTokenAuth::RegistrationsCo
 
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :postal_code, :address, :introduction_text])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[name postal_code address introduction_text image_url])
+  end
+
+  def update
+    image_match = params[:image_url].match(/^data:(.*?);(?:.*?),(.*)$/)
+    mime_type, encoded_image = image_match.captures
+    extension = mime_type.split('/').second
+    decoded_image = Base64.decode64(encoded_image)
+    filename = "image#{current_api_v1_staff.id}.#{extension}"
+    image_path = "#{Rails.root}/tmp/storage/#{filename}"
+    File.open(image_path, 'wb') do |f|
+      f.write(decoded_image)
+    end
+    current_api_v1_staff.image.attach({ io: File.open(image_path), filename: filename, content_type: mime_type })
+    current_api_v1_staff[:image_url] = encoded_image
+    current_api_v1_staff.save
+    render json: { status: 200, message: 'update the staff', data: current_api_v1_staff }
   end
 
   # The path used after sign up.
