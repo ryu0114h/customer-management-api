@@ -59,19 +59,37 @@ class Api::V1::Staff::RegistrationsController < DeviseTokenAuth::RegistrationsCo
   end
 
   def update
-    image_match = params[:image_url].match(/^data:(.*?);(?:.*?),(.*)$/)
-    mime_type, encoded_image = image_match.captures
-    extension = mime_type.split('/').second
-    decoded_image = Base64.decode64(encoded_image)
-    filename = "image#{current_api_v1_staff.id}.#{extension}"
-    image_path = "#{Rails.root}/tmp/storage/#{filename}"
-    File.open(image_path, 'wb') do |f|
-      f.write(decoded_image)
+    if image_params[:image_url].present?
+      image_match = params[:image_url].match(/^data:(.*?);(?:.*?),(.*)$/)
+      mime_type, encoded_image = image_match.captures
+      extension = mime_type.split('/').second
+      decoded_image = Base64.decode64(encoded_image)
+      filename = "image#{current_api_v1_staff.id}.#{extension}"
+      image_path = "#{Rails.root}/tmp/storage/#{filename}"
+      File.open(image_path, 'wb') do |f|
+        f.write(decoded_image)
+      end
+      current_api_v1_staff.image.attach({ io: File.open(image_path), filename: filename, content_type: mime_type })
+      current_api_v1_staff[:image_url] = encoded_image
+    else
+      current_api_v1_staff[:image_url] = nil
     end
-    current_api_v1_staff.image.attach({ io: File.open(image_path), filename: filename, content_type: mime_type })
-    current_api_v1_staff[:image_url] = encoded_image
-    current_api_v1_staff.save
-    render json: { status: 200, message: 'update the staff', data: current_api_v1_staff }
+
+    if current_api_v1_staff.update(staff_params)
+      render json: { status: 200, message: 'update the staff', data: current_api_v1_staff }
+    else
+      render json: { status: 400, data: current_api_v1_staff.errors }
+    end
+  end
+
+  private
+
+  def staff_params
+    params.permit(:name, :email, :postal_code, :address, :introduction_text)
+  end
+
+  def image_params
+    params.permit(:image_url)
   end
 
   # The path used after sign up.
