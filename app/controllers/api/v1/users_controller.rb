@@ -9,7 +9,7 @@ module Api
         # ユーザー毎に表示
         # users = User.where(staff_id: current_api_v1_staff.id)
 
-        render json: { status: 200, message: "Loaded users", data: users }
+        render json: { status: 200, message: 'Loaded users', data: users }
       end
 
       def create
@@ -24,25 +24,28 @@ module Api
       end
 
       def destroy
-        if user = User.find_by(id: params[:id])
+        user = User.find_by(id: params[:id])
+        if user
           user.destroy
-          render json: { status: 200, message: "Deleted the user", data: user }
+          render json: { status: 200, message: 'Deleted the user', data: user }
         else
           render json: { status: 400, data: user.errors }
         end
       end
 
       def update
-        if user = User.find_by(id: params[:id])
+        user = User.find_by(id: params[:id])
+        if user
           user.update(user_params)
-          render json: { status: 200, message: "update the user", data: user }
+          render json: { status: 200, message: 'update the user', data: user }
         else
           render json: { status: 400, data: user.errors }
         end
       end
 
       def user_params
-        params.require(:user).permit(:id, :firstName, :lastName, :age, :address, :memo, :staff_id, :created_at, :updated_at)
+        params.require(:user).permit(:id, :firstName, :lastName, :age, :address, :memo, :staff_id, :created_at,
+                                     :updated_at)
       end
     end
   end
