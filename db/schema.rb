@@ -44,15 +44,13 @@ ActiveRecord::Schema.define(version: 2021_04_05_152246) do
   end
 
   create_table "reservations", force: :cascade do |t|
-    t.bigint "staff_id", null: false
+    t.bigint "staff_id"
     t.bigint "user_id"
     t.boolean "all_day"
     t.datetime "start_datetime"
     t.datetime "end_datetime"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["staff_id"], name: "index_reservations_on_staff_id"
-    t.index ["user_id"], name: "index_reservations_on_user_id"
   end
 
   create_table "staffs", force: :cascade do |t|
@@ -95,5 +93,4 @@ ActiveRecord::Schema.define(version: 2021_04_05_152246) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "reservations", "users"
 end
